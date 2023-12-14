@@ -1,30 +1,33 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-// import 'package:tugas_praktikum/main.dart';
+import 'package:get/get.dart';
+import 'package:tugas_praktikum/contrroller/home_controller.dart';
+import 'package:tugas_praktikum/view/home_view.dart';
+import 'package:tugas_praktikum/view/todos_view.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MaterialApp());
+  testWidgets('HomeView UI Test', (WidgetTester tester) async {
+    // Build our widget and trigger a frame.
+    await tester.pumpWidget(
+      GetMaterialApp(
+        home: const HomeView(),
+        initialBinding: BindingsBuilder(() {
+          Get.put<HomeController>(HomeController());
+        }),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify if the title is present in the app bar.
+    expect(find.text('Halaman Satu'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify if the ElevatedButton is present.
+    expect(find.byType(ElevatedButton), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Tap the ElevatedButton and trigger navigation.
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle(); // Wait for the navigation to complete.
+
+    // Verify if the TodosView is pushed after tapping the ElevatedButton.
+    expect(find.byType(TodosView), findsOneWidget);
   });
 }
